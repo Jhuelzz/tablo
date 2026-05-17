@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Modern Deniz Harp Gemisi Kayıt Defteri</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg-body:       #eef2f6;
+  --bg-surface:    #ffffff;
+  --bg-alt:        #f8fafc;
+  --primary:       #025091;
+  --primary-hover: #013a6b;
+  --secondary:     #0f80db;
+  --accent:        #e0f0ff;
+  --text-main:     #1e293b;
+  --text-muted:    #64748b;
+  --text-inverse:  #ffffff;
+  --border-light:  #e2e8f0;
+  --border-focus:  #94a3b8;
+  --danger:        #ef4444;
+  --danger-hover:  #dc2626;
+  --font-sans:     'Inter', sans-serif;
+  --font-mono:     'JetBrains Mono', monospace;
+  --radius-sm:     6px;
+  --radius-md:     10px;
+  --radius-lg:     16px;
+  --shadow-sm:     0 2px 4px rgba(0,0,0,0.05);
+  --shadow-md:     0 10px 25px rgba(2, 80, 145, 0.08);
+  --shadow-lg:     0 20px 40px rgba(0,0,0,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background: var(--bg-body); font-family: var(--font-sans); color: var(--text-main); padding: 40px 16px 80px; line-height: 1.6;}
+.page{max-width: 1000px; margin: 0 auto; background: var(--bg-surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); position: relative;}
+.masthead{text-align: center; padding: 48px 40px 36px; background: linear-gradient(135deg, var(--primary), var(--primary-hover)); color: var(--text-inverse); border-radius: var(--radius-lg) var(--radius-lg) 0 0;}
+.masthead-top{font-family: var(--font-mono); font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); display: block; margin-bottom: 16px;}
+.masthead h1{font-size: clamp(26px, 5vw, 42px); font-weight: 800; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 8px;}
+.masthead-sub{font-size: 15px; color: var(--accent); opacity: 0.9; font-weight: 300;}
+.content{padding: 40px;}
+.section-head{font-size: 18px; font-weight: 700; color: var(--primary); letter-spacing: 0.5px; border-bottom: 2px solid var(--accent); padding-bottom: 10px; margin-bottom: 24px; display: flex; align-items: center; gap: 8px;}
+.selector-area{display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px;}
+@media(max-width:768px){.selector-area{grid-template-columns:1fr;} .content{padding:24px 20px;}}
+.selector-box{border: 1px solid var(--border-light); border-radius: var(--radius-md); background: var(--bg-surface); box-shadow: var(--shadow-sm); position: relative;}
+.selector-box-header{background: var(--bg-alt); border-bottom: 1px solid var(--border-light); padding: 14px 18px; border-radius: var(--radius-md) var(--radius-md) 0 0; font-weight: 600; font-size: 14px; color: var(--primary); display: flex; align-items: center; gap: 10px;}
+.selector-num{width: 24px; height: 24px; background: var(--secondary); color: var(--text-inverse); font-family: var(--font-mono); font-size: 12px; border-radius: 50%; display: flex; align-items: center; justify-content: center;}
+.cascading-selects{padding: 16px 18px; border-bottom: 1px solid var(--border-light); display: flex; flex-direction: column; gap: 12px;}
+.select-group label{display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;}
+.select-group select{width: 100%; font-family: var(--font-sans); font-size: 14px; background: var(--bg-alt); border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: var(--text-main); padding: 8px 12px; outline: none; transition: 0.2s; cursor: pointer;}
+.select-group select:focus{border-color: var(--secondary); box-shadow: 0 0 0 3px var(--accent); background: var(--bg-surface);}
+.select-group select:disabled{background: var(--border-light); color: var(--border-focus); cursor: not-allowed;}
+.selected-preview{padding: 16px 18px; display: flex; align-items: center; gap: 12px; background: #fdfdfe; border-radius: 0 0 var(--radius-md) var(--radius-md);}
+.preview-name{font-weight: 700; font-size: 16px; color: var(--primary);}
+.preview-sub{font-size: 12px; color: var(--text-muted); margin-top:2px;}
+.preview-empty{font-size: 13px; color: var(--text-muted); font-style: italic;}
+.preview-icon{width: 36px; height: 36px; background: var(--accent); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 16px; flex-shrink: 0;}
+.compare-bar{display: flex; align-items: center; gap: 16px; margin-bottom: 40px; flex-wrap: wrap;}
+.modern-btn{font-family: var(--font-sans); font-size: 14px; font-weight: 600; padding: 12px 24px; border-radius: var(--radius-sm); border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px;}
+.modern-btn.primary{background: var(--secondary); color: var(--text-inverse); box-shadow: 0 4px 10px rgba(15, 128, 219, 0.3);}
+.modern-btn.primary:hover:not(:disabled){background: var(--primary); transform: translateY(-1px);}
+.modern-btn.primary:disabled{background: var(--border-focus); box-shadow: none; cursor: not-allowed; opacity: 0.7;}
+.modern-btn.outline{background: transparent; color: var(--text-muted); border: 1px solid var(--border-light);}
+.modern-btn.outline:hover{background: var(--bg-alt); color: var(--text-main);}
+.hint-txt{font-size: 13px; color: var(--text-muted);}
+#comparisonSection{display: none; animation: fadeIn 0.4s ease;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+.comp-table-wrap{border: 1px solid var(--border-light); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm);}
+.comp-table{width: 100%; border-collapse: collapse; text-align: left;}
+.comp-table th, .comp-table td { padding: 14px 20px; }
+.comp-table thead tr th{background: var(--primary); color: var(--text-inverse); font-weight: 600; font-size: 15px; border-right: 1px solid rgba(255,255,255,0.1);}
+.comp-table thead .th-field{ width: 28%; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
+.comp-table thead .th-ship1{ width: 36%; }
+.comp-table thead .th-ship2{ width: 36%; border-right: none;}
+.comp-table tr.cat-row td{background: var(--bg-alt); color: var(--primary); font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);}
+.comp-table tr.data-row{ border-bottom: 1px solid var(--border-light); }
+.comp-table tr.data-row:nth-child(even){ background: var(--bg-surface); }
+.comp-table tr.data-row:nth-child(odd){ background: #fdfdfe; }
+.comp-table tr.data-row:hover{ background: var(--accent); }
+.comp-table .td-field{font-weight: 600; font-size: 13px; color: var(--text-muted); border-right: 1px solid var(--border-light);}
+.comp-table .td-val{font-size: 14px; color: var(--text-main); border-right: 1px solid var(--border-light);}
+.comp-table .td-val:last-child{ border-right: none; }
+.comp-table .td-val.empty{ color: var(--border-focus); font-style: italic; font-size: 13px; }
+.admin-section{margin-top: 50px; padding-top: 30px; border-top: 2px dashed var(--border-light);}
+.admin-toggle-bar{display: flex; align-items: center; gap: 16px; margin-bottom: 24px; flex-wrap: wrap;}
+.admin-badge{font-family: var(--font-mono); font-size: 11px; font-weight: 700; background: var(--text-main); color: var(--text-inverse); padding: 6px 12px; border-radius: 20px;}
+.admin-desc{font-size: 13px; color: var(--text-muted);}
+.gate{background: var(--bg-alt); border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 30px; text-align: center; display: none;}
+.gate.open{display: block;}
+.gate p{color: var(--text-muted); margin-bottom: 20px; font-size: 14px;}
+.gate-form{display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;}
+.modern-input{font-family: var(--font-sans); font-size: 14px; background: var(--bg-surface); border: 1px solid var(--border-focus); color: var(--text-main); padding: 10px 16px; border-radius: var(--radius-sm); outline: none; transition: border 0.2s; width: 100%; max-width: 250px;}
+.modern-input:focus{ border-color: var(--secondary); box-shadow: 0 0 0 3px var(--accent); }
+.admin-content{display: none;}
+.admin-content.open{display: block;}
+.admin-toolbar{display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px;}
+.ledger-wrap{ overflow-x: auto; border: 1px solid var(--border-light); border-radius: var(--radius-md); }
+.ledger-table{ width: 100%; border-collapse: collapse; font-size: 13px; min-width: 700px; background: var(--bg-surface); }
+.ledger-table th{font-size: 12px; font-weight: 600; color: var(--text-muted); background: var(--bg-alt); padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-light);}
+.ledger-table td{ padding: 12px 16px; border-bottom: 1px solid var(--border-light); vertical-align: middle; }
+.ledger-table tr:last-child td{ border-bottom: none; }
+.ledger-table tr:hover{ background: var(--bg-alt); }
+.action-btn{background: none; border: none; cursor: pointer; border-radius: 4px; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s;}
+.edit-btn{ color: var(--secondary); background: var(--accent); }
+.edit-btn:hover{ background: var(--secondary); color: white; }
+.del-btn{ color: var(--danger); background: #fee2e2; }
+.del-btn:hover{ background: var(--danger); color: white; }
+.modal-overlay{display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; align-items: center; justify-content: center; padding: 16px;}
+.modal-overlay.open{display: flex;}
+.modal-box{background: var(--bg-surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); width: 100%; max-width: 750px; max-height: 90vh; display: flex; flex-direction: column;}
+.modal-header{background: var(--bg-alt); padding: 20px 24px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center; border-radius: var(--radius-lg) var(--radius-lg) 0 0;}
+.modal-title{font-size: 18px; font-weight: 700; color: var(--primary);}
+.modal-close{background: none; border: none; color: var(--text-muted); font-size: 24px; cursor: pointer; line-height: 1; transition: 0.2s;}
+.modal-close:hover{color: var(--danger);}
+.modal-body{ padding: 24px; overflow-y: auto; }
+.form-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media(max-width:550px){.form-grid{grid-template-columns:1fr;}}
+.form-group{ display: flex; flex-direction: column; gap: 6px; }
+.form-group.full{ grid-column: 1/-1; }
+.form-label{ font-size: 12px; font-weight: 600; color: var(--text-muted); }
+.form-input, .form-select, .form-textarea{font-family: var(--font-sans); font-size: 14px; background: var(--bg-surface); border: 1px solid var(--border-light); border-radius: var(--radius-sm); color: var(--text-main); padding: 10px 14px; outline: none; transition: 0.2s;}
+.form-textarea{ resize: vertical; min-height: 80px; }
+.form-input:focus, .form-select:focus, .form-textarea:focus{border-color: var(--secondary); box-shadow: 0 0 0 3px var(--accent);}
+.modal-footer{padding: 16px 24px; border-top: 1px solid var(--border-light); display: flex; gap: 12px; justify-content: flex-end; background: var(--bg-alt); border-radius: 0 0 var(--radius-lg) var(--radius-lg);}
+.toast{position: fixed; bottom: 30px; right: 30px; background: var(--text-main); color: var(--text-inverse); font-size: 14px; font-weight: 500; padding: 12px 24px; border-radius: var(--radius-md); box-shadow: var(--shadow-md); opacity: 0; transform: translateY(15px); transition: all 0.3s; z-index: 2000; pointer-events: none;}
+.toast.show{opacity: 1; transform: translateY(0);}
+.modal-body::-webkit-scrollbar, .ledger-wrap::-webkit-scrollbar { width:8px; height:8px; }
+.modal-body::-webkit-scrollbar-track, .ledger-wrap::-webkit-scrollbar-track { background: var(--bg-alt); }
+.modal-body::-webkit-scrollbar-thumb, .ledger-wrap::-webkit-scrollbar-thumb { background: var(--border-focus); border-radius:4px; }
+.modal-body::-webkit-scrollbar-thumb:hover, .ledger-wrap::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="masthead">
+    <span class="masthead-top">Modernizasyon Seviyesi III - Küresel Arşiv</span>
+    <h1>Deniz Harp Gemisi Arşivi</h1>
+    <div class="masthead-sub">Tarihsel ve Modern Donanma Sınıflandırma Sistemi</div>
+  </div>
+
+  <div class="content">
+    <div class="section-head">Gemi Seçimi & Karşılaştırma Modülü</div>
+    <div class="selector-area">
+      <div class="selector-box" id="box1">
+        <div class="selector-box-header"><span class="selector-num">1</span><span>Birinci Hedef Gemi</span></div>
+        <div class="cascading-selects">
+          <div class="select-group"><label>1. Ülke / Donanma</label><select id="nation1" onchange="onNationChange(1)"><option value="">— Ülke Seçin —</option></select></div>
+          <div class="select-group"><label>2. Gemi Türü</label><select id="type1" onchange="onTypeChange(1)" disabled><option value="">— Önce Ülke Seçin —</option></select></div>
+          <div class="select-group"><label>3. Gemi Sınıfı ve Adı</label><select id="ship1" onchange="onShipChange(1)" disabled><option value="">— Önce Tür Seçin —</option></select></div>
+        </div>
+        <div class="selected-preview" id="preview1"><span class="preview-empty">Listeden seçimlerinizi tamamlayın...</span></div>
+      </div>
+      <div class="selector-box" id="box2">
+        <div class="selector-box-header"><span class="selector-num">2</span><span>İkinci Hedef Gemi</span></div>
+        <div class="cascading-selects">
+          <div class="select-group"><label>1. Ülke / Donanma</label><select id="nation2" onchange="onNationChange(2)"><option value="">— Ülke Seçin —</option></select></div>
+          <div class="select-group"><label>2. Gemi Türü</label><select id="type2" onchange="onTypeChange(2)" disabled><option value="">— Önce Ülke Seçin —</option></select></div>
+          <div class="select-group"><label>3. Gemi Sınıfı ve Adı</label><select id="ship2" onchange="onShipChange(2)" disabled><option value="">— Önce Tür Seçin —</option></select></div>
+        </div>
+        <div class="selected-preview" id="preview2"><span class="preview-empty">Listeden seçimlerinizi tamamlayın...</span></div>
+      </div>
+    </div>
+
+    <div class="compare-bar">
+      <button class="modern-btn primary" id="compareBtn" onclick="renderComparison()" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+        Teknik Verileri Karşılaştır
+      </button>
+      <button class="modern-btn outline" onclick="resetAll()">Sıfırla</button>
+      <span class="hint-txt" id="hintTxt">Lütfen her iki modülden birer gemi seçin.</span>
+    </div>
+
+    <div id="comparisonSection">
+      <div class="section-head">Karşılaştırmalı Analiz Raporu</div>
+      <div class="comp-table-wrap">
+        <table class="comp-table" id="compTable">
+          <thead><tr><th class="th-field">Spesifikasyon</th><th class="th-ship1" id="hShip1">—</th><th class="th-ship2" id="hShip2">—</th></tr></thead>
+          <tbody id="compBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="admin-section">
+      <div class="section-head">Sistem Yönetimi</div>
+      <div class="admin-toggle-bar">
+        <span class="admin-badge">Yetkili Personel</span>
+        <button class="modern-btn outline" style="padding: 6px 16px; font-size:13px;" id="adminToggleBtn" onclick="toggleAdminGate()">Güvenli Giriş</button>
+      </div>
+      <div class="gate" id="adminGate">
+        <p>Sistem veritabanına erişim için yönetici parolasını giriniz.</p>
+        <div class="gate-form">
+          <input class="modern-input" type="password" id="adminPass" placeholder="Parola..." onkeydown="if(event.key==='Enter')checkPass()"/>
+          <button class="modern-btn primary" onclick="checkPass()">Doğrula</button>
+        </div>
+      </div>
+      <div class="admin-content" id="adminContent">
+        <div class="admin-toolbar">
+          <button class="modern-btn primary" onclick="openAddModal()">+ Yeni Gemi Ekle</button>
+          <button class="modern-btn outline" onclick="exportCSV()">CSV Olarak İndir</button>
+          <button class="modern-btn outline" onclick="adminLock()" style="color:var(--danger); border-color:var(--danger);">Oturumu Kapat</button>
+        </div>
+        <div class="ledger-wrap">
+          <table class="ledger-table" id="adminTable" style="display:none;">
+            <thead><tr><th>Gemi Adı</th><th>Sınıf</th><th>Tür</th><th>Donanma</th><th>Hizmet</th><th style="text-align:center; width:80px;">İşlem</th></tr></thead>
+            <tbody id="adminBody"></tbody>
+          </table>
+        </div>
+        <div id="adminEmpty" style="display:none; padding:40px; text-align:center; color:var(--text-muted);">Kayıtlı veri bulunamadı.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="shipModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">Yeni Kayıt Formu</span>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group full"><div style="border-bottom:1px solid var(--border-light); padding-bottom:5px; margin-bottom:5px; color:var(--primary); font-weight:600;">Sınıflandırma</div></div>
+        <div class="form-group"><label class="form-label">Gemi Adı *</label><input class="form-input" id="f_name" placeholder="örn. TCG İstanbul"/></div>
+        <div class="form-group"><label class="form-label">Sınıf</label><input class="form-input" id="f_class" placeholder="örn. İstif sınıfı"/></div>
+        <div class="form-group"><label class="form-label">Tür</label>
+          <select class="form-select" id="f_type">
+            <option value="">— Seçiniz —</option>
+            <option value="Fırkateyn (FF / FFG)">Fırkateyn (FF / FFG)</option>
+            <option value="Muhrip (DD / DDG)">Muhrip (DD / DDG)</option>
+            <option value="Korvet (FS)">Korvet (FS)</option>
+            <option value="Kruvazör (CG / CA / CL)">Kruvazör (CG / CA / CL)</option>
+            <option value="Muharebe Kruvazörü (BC)">Muharebe Kruvazörü (BC)</option>
+            <option value="Zırhlı (BB)">Zırhlı (BB)</option>
+            <option value="Uçak Gemisi (CV / CVN)">Uçak Gemisi (CV / CVN)</option>
+            <option value="Hafif Uçak Gemisi (CVL)">Hafif Uçak Gemisi (CVL)</option>
+            <option value="Denizaltı (SS / SSN / SSBN)">Denizaltı (SS / SSN / SSBN)</option>
+            <option value="Amfibi Hücum Gemisi (LHD / LHA)">Amfibi Hücum Gemisi (LHD / LHA)</option>
+            <option value="Hücumbot (PTG / FAC)">Hücumbot (PTG / FAC)</option>
+            <option value="Diğer">Diğer</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Ülke / Donanma</label><input class="form-input" id="f_nation" placeholder="örn. Türkiye"/></div>
+        <div class="form-group"><label class="form-label">Hizmete Giriş Tarihi</label><input class="form-input" id="f_commission" placeholder="örn. 2024"/></div>
+        
+        <div class="form-group full"><div style="border-bottom:1px solid var(--border-light); padding-bottom:5px; margin-bottom:5px; margin-top:10px; color:var(--primary); font-weight:600;">Boyutlar ve Performans</div></div>
+        <div class="form-group"><label class="form-label">Deplasman (ton)</label><input class="form-input" id="f_displacement" placeholder="örn. 3000"/></div>
+        <div class="form-group"><label class="form-label">Uzunluk (metre)</label><input class="form-input" id="f_length" placeholder="örn. 113.2"/></div>
+        <div class="form-group"><label class="form-label">Genişlik (metre)</label><input class="form-input" id="f_beam" placeholder="örn. 14.4"/></div>
+        <div class="form-group"><label class="form-label">Su Çekimi / Draft (metre)</label><input class="form-input" id="f_draft" placeholder="örn. 4.05"/></div>
+        <div class="form-group"><label class="form-label">İtici Güç (shp/Motor)</label><input class="form-input" id="f_power" placeholder="örn. CODAG 31,000 kW"/></div>
+        <div class="form-group"><label class="form-label">Azami Hız (knot)</label><input class="form-input" id="f_speed" placeholder="örn. 29"/></div>
+        <div class="form-group"><label class="form-label">Menzil (Deniz Mili)</label><input class="form-input" id="f_range" placeholder="örn. 5700 nmi"/></div>
+        
+        <div class="form-group full"><div style="border-bottom:1px solid var(--border-light); padding-bottom:5px; margin-bottom:5px; margin-top:10px; color:var(--primary); font-weight:600;">Silahlanma</div></div>
+        <div class="form-group"><label class="form-label">Ana Batarya</label><input class="form-input" id="f_maingun" placeholder='örn. 1 × 76mm'/></div>
+        <div class="form-group"><label class="form-label">Füze Sistemleri (VLS vb.)</label><input class="form-input" id="f_secondary" placeholder="örn. 16 hücreli MIDLAS"/></div>
+        <div class="form-group"><label class="form-label">Yakın Hava Savunma (CIWS)</label><input class="form-input" id="f_aaguns" placeholder="örn. 1 × 35mm Gökdeniz"/></div>
+        <div class="form-group"><label class="form-label">Torpido Tüpleri</label><input class="form-input" id="f_torpedoes" placeholder="Yok"/></div>
+        
+        <div class="form-group full"><div style="border-bottom:1px solid var(--border-light); padding-bottom:5px; margin-bottom:5px; margin-top:10px; color:var(--primary); font-weight:600;">Koruma, Donanım ve Tarihçe</div></div>
+        <div class="form-group"><label class="form-label">Zırh / Elektronik Harp</label><input class="form-input" id="f_armour" placeholder="örn. ARES-2N ED/ET"/></div>
+        <div class="form-group"><label class="form-label">Havacılık Kapasitesi</label><input class="form-input" id="f_aviation" placeholder="örn. 1 × S-70B Seahawk"/></div>
+        <div class="form-group"><label class="form-label">Mürettebat</label><input class="form-input" id="f_crew" placeholder="örn. 123"/></div>
+        <div class="form-group full"><label class="form-label">Akıbet</label><input class="form-input" id="f_fate" placeholder="Aktif Hizmette"/></div>
+        <div class="form-group full"><label class="form-label">Tarihsel Notlar</label><textarea class="form-textarea" id="f_notes" placeholder="Kısa tarihçe, operasyonlar..."></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modern-btn outline" onclick="closeModal()">İptal</button>
+      <button class="modern-btn primary" onclick="saveShip()">Sisteme Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = 'navreg-modern-global-v4';
+async function loadShips(){
+  try{ const r=await window.storage.get(KEY); return r?JSON.parse(r.value):defaults(); }catch(e){ return defaults(); }
+}
+async function saveShips(s){
+  try{ await window.storage.set(KEY,JSON.stringify(s)); }catch(e){}
+}
+
+/* DEVASA KÜRESEL DONANMA ARŞİVİ - WWI'den Günümüze Tüm Başlıca Sınıflar */
+function defaults(){
+  return [
+    /* ---------------- TÜRKİYE ---------------- */
+    { id:1, name:'TCG İstanbul (F-515)', shipClass:'İstif', type:'Fırkateyn (FF / FFG)', nation:'Türkiye', displacement:'3000', length:'113.2', beam:'14.4', draft:'4.05', power:'CODAG (31,000 kW)', speed:'29', range:'5700', mainGun:'1 × 76 mm OTO Melara', secondary:'16 hcr. MİDLAS (HİSAR-D), 16 × Atmaca', aaGuns:'1 × 35 mm Gökdeniz CIWS', torpedoes:'2 × İkiz 324 mm', armour:'ARES-2N ED/ET', aviation:'1 × S-70B Seahawk', crew:'123', commission:'2024', fate:'Aktif Hizmette', notes:'MİLGEM projesinin devamı niteliğinde, ilk milli fırkateyn.' },
+    { id:2, name:'TCG Anadolu (L-400)', shipClass:'Anadolu', type:'Amfibi Hücum Gemisi (LHD / LHA)', nation:'Türkiye', displacement:'27436', length:'231', beam:'32', draft:'6.9', power:'5 × Navantia Man dizel', speed:'20.5', range:'9000', mainGun:'Yok', secondary:'Yok', aaGuns:'2 × Phalanx CIWS, 5 × Aselsan STOP', torpedoes:'Yok', armour:'Torpido Savunma Sistemi', aviation:'Bayraktar TB3, Kızılelma, S-70B', crew:'1223 (Gemi+Amfibi)', commission:'2023', fate:'Aktif Hizmette', notes:'Türk Donanmasının amiral gemisi, dünyanın ilk SİHA gemisi.' },
+    { id:3, name:'TCG Barbaros (F-244)', shipClass:'Barbaros (MEKO 200 TN II-A)', type:'Fırkateyn (FF / FFG)', nation:'Türkiye', displacement:'3380', length:'118', beam:'14.8', draft:'4.3', power:'CODOG', speed:'32', range:'4100', mainGun:'1 × 5 inç/54 Mk 45', secondary:'16 × Mk 41 VLS (ESSM), 8 × Harpoon', aaGuns:'3 × Oerlikon Sea Zenith', torpedoes:'2 × Üçlü Mk 32', armour:'Elektronik Karşı Tedbir (ECM)', aviation:'1 × AB-212 / S-70B', crew:'170', commission:'1997', fate:'Aktif Hizmette', notes:'Yarı ömür modernizasyonundan (YÖM) geçmektedir.' },
+    { id:4, name:'TCG Heybeliada (F-511)', shipClass:'Ada', type:'Korvet (FS)', nation:'Türkiye', displacement:'2400', length:'99.5', beam:'14.4', draft:'3.9', power:'CODAG', speed:'29+', range:'3500', mainGun:'1 × 76 mm OTO Melara', secondary:'8 × Harpoon / Atmaca, 21 × RAM', aaGuns:'RAM', torpedoes:'2 × İkiz 324 mm Mk 32', armour:'Gelişmiş Düşük Radar İzi', aviation:'1 × S-70B Seahawk', crew:'93', commission:'2011', fate:'Aktif Hizmette', notes:'MİLGEM projesinin ilk meyvesi milli korvet.' },
+    { id:5, name:'TCG Preveze (S-353)', shipClass:'Preveze (Tip 209T1/1400)', type:'Denizaltı (SS / SSN / SSBN)', nation:'Türkiye', displacement:'1586 (Daldığında)', length:'62', beam:'6.2', draft:'5.5', power:'Dizel-Elektrik', speed:'21.5 (Daldığında)', range:'8200', mainGun:'Yok', secondary:'Sub-Harpoon Füze Kapasitesi', aaGuns:'Yok', torpedoes:'8 × 533 mm tüp (14 Torpido)', armour:'Çelik Basınç Teknesi', aviation:'Yok', crew:'30', commission:'1994', fate:'Aktif Hizmette', notes:'MÜREN Savaş Yönetim Sistemi ve AKYA torpidosu entegre edildi.' },
+    { id:6, name:'TCG Yavuz (eski SMS Goeben)', shipClass:'Moltke', type:'Muharebe Kruvazörü (BC)', nation:'Türkiye', displacement:'25400', length:'186.6', beam:'29.4', draft:'9.19', power:'Buhar Türbinleri (52,000 shp)', speed:'28', range:'4120', mainGun:'10 × 28 cm SK L/50', secondary:'12 × 15 cm SK L/45', aaGuns:'4 × 8.8 cm', torpedoes:'4 × 50 cm tüp', armour:'270 mm kuşak', aviation:'Yok', crew:'1053', commission:'1912 (Almanya) / 1914 (TR)', fate:'1973 yılında söküldü.', notes:'Osmanlı\'nın I. Dünya Savaşı\'na girmesine sebep olan efsanevi gemi.' },
+
+    /* ---------------- ABD ---------------- */
+    { id:7, name:'USS Iowa (BB-61)', shipClass:'Iowa', type:'Zırhlı (BB)', nation:'ABD', displacement:'57540', length:'270.4', beam:'33', draft:'11', power:'Buhar türbinleri (212,000 shp)', speed:'33', range:'14890', mainGun:'9 × 16 inç (406 mm) Mk 7', secondary:'20 × 5 inç (127 mm) Mk 12', aaGuns:'80 × 40 mm Bofors, 49 × 20 mm Oerlikon', torpedoes:'Yok', armour:'307 mm kuşak', aviation:'3 × Vought OS2U Kingfisher (WWII)', crew:'2700', commission:'1943', fate:'Müze Gemisi', notes:'Modernize edilip 1990\'lara kadar Tomahawk füzeleriyle hizmet veren efsanevi hızlı zırhlı.' },
+    { id:8, name:'USS Enterprise (CVN-65)', shipClass:'Enterprise', type:'Uçak Gemisi (CV / CVN)', nation:'ABD', displacement:'93284', length:'342', beam:'40.5', draft:'12', power:'8 × Westinghouse Nükleer Reaktör (280,000 shp)', speed:'33.6', range:'Sınırsız', mainGun:'Yok', secondary:'3 × NATO Sea Sparrow (NSSM)', aaGuns:'3 × Phalanx CIWS', torpedoes:'Yok', armour:'200 mm zırhlı uçuş güvertesi', aviation:'90 Savaş Uçağı', crew:'5828', commission:'1961', fate:'Hizmet Dışı (Sökülüyor)', notes:'Dünyanın ilk nükleer motorlu uçak gemisi.' },
+    { id:9, name:'USS Arleigh Burke (DDG-51)', shipClass:'Arleigh Burke', type:'Muhrip (DD / DDG)', nation:'ABD', displacement:'8315', length:'154', beam:'20', draft:'9.4', power:'4 × GE LM2500 Gaz Türbini (100,000 shp)', speed:'30+', range:'4400', mainGun:'1 × 5 inç Mk 45', secondary:'90 hcr. Mk 41 VLS (Tomahawk, SM-2, ESSM)', aaGuns:'2 × Phalanx CIWS', torpedoes:'2 × Üçlü Mk 32', armour:'Kevlar Zırh, Aegis Savaş Sistemi', aviation:'Uçuş Güvertesi', crew:'303', commission:'1991', fate:'Aktif Hizmette', notes:'Aegis muharebe sistemi taşıyan ve sınıfına ismini veren muhrip.' },
+    { id:10, name:'USS Ticonderoga (CG-47)', shipClass:'Ticonderoga', type:'Kruvazör (CG / CA / CL)', nation:'ABD', displacement:'9600', length:'173', beam:'16.8', draft:'10.2', power:'4 × GE LM2500 Gaz Türbini', speed:'32.5', range:'6000', mainGun:'2 × 5 inç Mk 45', secondary:'122 hcr. Mk 41 VLS', aaGuns:'2 × Phalanx CIWS', torpedoes:'2 × Üçlü Mk 32', armour:'Kevlar Parçacık Koruması', aviation:'2 × SH-60 Seahawk', crew:'330', commission:'1983', fate:'2004 yılında hizmet dışı.', notes:'Aegis sistemini kullanan ilk kruvazör sınıfı.' },
+    { id:11, name:'USS Fletcher (DD-445)', shipClass:'Fletcher', type:'Muhrip (DD / DDG)', nation:'ABD', displacement:'2500', length:'114.7', beam:'12', draft:'5.4', power:'Buhar türbinleri (60,000 shp)', speed:'36.5', range:'6500', mainGun:'5 × 5 inç (127 mm)', secondary:'Değişken Bofors ve Oerlikon', aaGuns:'Bofors 40 mm', torpedoes:'10 × 21 inç (533 mm) tüp', armour:'19 mm Gövde', aviation:'Yok', crew:'329', commission:'1942', fate:'Müze Gemisi', notes:'II. Dünya Savaşında Pasifik cephesinin belkemiği olan ünlü muhrip sınıfı.' },
+
+    /* ---------------- İNGİLTERE ---------------- */
+    { id:12, name:'HMS Dreadnought', shipClass:'Dreadnought', type:'Zırhlı (BB)', nation:'İngiltere', displacement:'18120', length:'160.6', beam:'25', draft:'8', power:'Buhar Türbinleri (23,000 shp)', speed:'21', range:'6620', mainGun:'10 × 12 inç (305 mm) Mk X', secondary:'27 × 12-pdr', aaGuns:'2 × 12-pdr AA', torpedoes:'5 × 18 inç tüp', armour:'279 mm ana kuşak', aviation:'Yok', crew:'773', commission:'1906', fate:'1923\'te söküldü.', notes:'Kendinden önceki gemileri eskiten, tek çap büyük top tasarımının atası.' },
+    { id:13, name:'HMS Hood (51)', shipClass:'Admiral', type:'Muharebe Kruvazörü (BC)', nation:'İngiltere', displacement:'47430', length:'262.3', beam:'31.8', draft:'9.8', power:'Buhar Türbinleri (144,000 shp)', speed:'31', range:'5332', mainGun:'8 × 15 inç (381 mm) Mk I', secondary:'14 × 4 inç (102 mm)', aaGuns:'24 × 2-pdr "Pom-pom"', torpedoes:'4 × 21 inç', armour:'305 mm kuşak', aviation:'Yok', crew:'1418', commission:'1920', fate:'24 Mayıs 1941\'de Bismarck tarafından batırıldı.', notes:'İngiliz Donanmasının gururu olan ünlü muharebe kruvazörü.' },
+    { id:14, name:'HMS Queen Elizabeth (R08)', shipClass:'Queen Elizabeth', type:'Uçak Gemisi (CV / CVN)', nation:'İngiltere', displacement:'65000', length:'284', beam:'73', draft:'11', power:'İkiz Rolls-Royce MT30 Gaz Türbini', speed:'25+', range:'10000', mainGun:'Yok', secondary:'Yok', aaGuns:'3 × Phalanx CIWS, 4 × 30 mm DS30M', torpedoes:'Yok', armour:'Bilinmiyor', aviation:'40 - 50 uçak (F-35B Lightning II ve helikopterler)', crew:'1600 (Hava mürettebatı dahil)', commission:'2017', fate:'Aktif Hizmette', notes:'Kraliyet Donanmasının bugüne kadar inşa ettiği en büyük savaş gemisi.' },
+    { id:15, name:'HMS Daring (D32)', shipClass:'Type 45 (Daring)', type:'Muhrip (DD / DDG)', nation:'İngiltere', displacement:'8500', length:'152.4', beam:'21.2', draft:'7.4', power:'İkiz WR-21 Gaz Türbini (IEP)', speed:'30+', range:'7000', mainGun:'1 × 4.5 inç (113 mm) Mark 8', secondary:'48 hcr. Sylver A50 VLS (Aster)', aaGuns:'2 × Phalanx CIWS', torpedoes:'Yok', armour:'Düşük Radar İzi (Stealth)', aviation:'1-2 adet Wildcat / Merlin', crew:'191', commission:'2009', fate:'Aktif Hizmette', notes:'Hava savunma odaklı en gelişmiş muhriplerden biri.' },
+
+    /* ---------------- ALMANYA ---------------- */
+    { id:16, name:'SMS Hindenburg', shipClass:'Derfflinger', type:'Muharebe Kruvazörü (BC)', nation:'Almanya', displacement:'31200', length:'212.8', beam:'29', draft:'9.3', power:'Buhar türbinleri (72,000 shp)', speed:'26.6', range:'6100', mainGun:'8 × 30.5 cm SK L/50', secondary:'14 × 15 cm SK L/45', aaGuns:'4 × 8.8 cm Flak', torpedoes:'4 × 50 cm tüp', armour:'300 mm kuşak', aviation:'Yok', crew:'1112', commission:'1917', fate:'1919\'da Scapa Flow\'da mürettebatı tarafından batırıldı.', notes:'Alman İmparatorluk Donanmasının son ve en büyük muharebe kruvazörü.' },
+    { id:17, name:'Bismarck', shipClass:'Bismarck', type:'Zırhlı (BB)', nation:'Almanya', displacement:'50300', length:'251', beam:'36', draft:'9.3', power:'Buhar türbinleri (150,170 shp)', speed:'30', range:'8870', mainGun:'8 × 38 cm SKC/34', secondary:'12 × 15 cm SKC/28', aaGuns:'16 × 10.5 cm', torpedoes:'Yok', armour:'320 mm kuşak', aviation:'4 × Arado Ar 196 Deniz Uçağı', crew:'2200', commission:'1940', fate:'27 Mayıs 1941\'de Atlantik\'te batırıldı.', notes:'Danimarka Boğazı Muharebesinde HMS Hood\'u batıran efsanevi zırhlı.' },
+    { id:18, name:'Prinz Eugen', shipClass:'Admiral Hipper', type:'Kruvazör (CG / CA / CL)', nation:'Almanya', displacement:'16970', length:'212.5', beam:'21.8', draft:'7.2', power:'Buhar türbinleri (132,000 shp)', speed:'32', range:'6800', mainGun:'8 × 20.3 cm SK C/34', secondary:'12 × 10.5 cm', aaGuns:'12 × 3.7 cm, 28 × 2 cm', torpedoes:'12 × 53.3 cm tüp', armour:'80 mm kuşak', aviation:'3 × Arado Ar 196', crew:'1382', commission:'1940', fate:'1946\'da Bikini Atolü nükleer testlerinde kullanıldı.', notes:'Bismarck\'a eşlik eden ve harpten sağ kurtulan ünlü ağır kruvazör.' },
+    { id:19, name:'U-96', shipClass:'Tip VIIC', type:'Denizaltı (SS / SSN / SSBN)', nation:'Almanya', displacement:'769 (Su Altı 871)', length:'67.1', beam:'6.2', draft:'4.7', power:'2x Dizel / 2x Elektrik', speed:'17.7 (Su üstü)', range:'8500', mainGun:'1 × 8.8 cm deck gun', secondary:'Yok', aaGuns:'1 × 2 cm FlaK', torpedoes:'5 × 53.3 cm (14 Torpido)', armour:'Basınç Teknesi', aviation:'Yok', crew:'44-52', commission:'1940', fate:'Mart 1945\'te Wilhelmshaven\'da battı.', notes:'Meşhur "Das Boot" filmine ilham olan Atlantik kurdu.' },
+
+    /* ---------------- JAPONYA ---------------- */
+    { id:20, name:'IJN Yamato', shipClass:'Yamato', type:'Zırhlı (BB)', nation:'Japonya', displacement:'72800', length:'263', beam:'38.9', draft:'10.4', power:'Buhar Türbinleri (150,000 shp)', speed:'27', range:'7200', mainGun:'9 × 46 cm (18.1 inç) Tip 94', secondary:'12 × 15.5 cm', aaGuns:'162 × 25 mm Tip 96', torpedoes:'Yok', armour:'410 mm ana kuşak', aviation:'7 Uçak, 2 Mancınık', crew:'2767', commission:'1941', fate:'7 Nisan 1945\'te Okinawa\'ya giderken batırıldı.', notes:'Tarihin en büyük zırhlısı.' },
+    { id:21, name:'IJN Akagi', shipClass:'Amagi (Dönüştürülmüş BC)', type:'Uçak Gemisi (CV / CVN)', nation:'Japonya', displacement:'41300', length:'260.6', beam:'31.3', draft:'8.7', power:'Buhar Türbinleri (133,000 shp)', speed:'31.5', range:'10000', mainGun:'6 × 20 cm', secondary:'Yok', aaGuns:'14 × 12 cm, 28 × 25 mm', torpedoes:'Yok', armour:'254 mm kuşak', aviation:'66 Uçak (A6M Zero, D3A Val, B5N Kate)', crew:'1630', commission:'1927', fate:'4 Haziran 1942\'de Midway\'de batırıldı.', notes:'Pearl Harbor saldırısını yöneten amiral uçak gemisi.' },
+    { id:22, name:'IJN Shimakaze', shipClass:'Shimakaze', type:'Muhrip (DD / DDG)', nation:'Japonya', displacement:'3300', length:'129.5', beam:'11.2', draft:'4.1', power:'Buhar türbinleri (79,240 shp)', speed:'39', range:'6000', mainGun:'6 × 12.7 cm Tip 3', secondary:'Yok', aaGuns:'Bilinmiyor', torpedoes:'15 × 61 cm (Tip 93 Long Lance)', armour:'Yok', aviation:'Yok', crew:'267', commission:'1943', fate:'Kasım 1944\'te Ormoc Körfezi\'nde batırıldı.', notes:'Olağanüstü hızı ve ağır torpido donanımıyla tek üretilen prototip.' },
+    { id:23, name:'JS Mogami (FFM-1)', shipClass:'Mogami', type:'Fırkateyn (FF / FFG)', nation:'Japonya', displacement:'5500', length:'133', beam:'16.3', draft:'4.7', power:'CODAG', speed:'30+', range:'Bilinmiyor', mainGun:'1 × 5 inç Mk 45', secondary:'16 × Mk 41 VLS (Tip 03), 8 × Tip 17 Gemisavar', aaGuns:'1 × SeaRAM', torpedoes:'2 × Tip 12 Torpido Tüpü', armour:'Gelişmiş Hayalet (Stealth) Tasarım', aviation:'1 × SH-60L Helikopter', crew:'90', commission:'2022', fate:'Aktif Hizmette', notes:'Minimum mürettebatla çalışan yeni nesil Japon fırkateyni.' },
+
+    /* ---------------- FRANSA ---------------- */
+    { id:24, name:'FS Richelieu', shipClass:'Richelieu', type:'Zırhlı (BB)', nation:'Fransa', displacement:'47548', length:'247.8', beam:'33', draft:'9.6', power:'Buhar türbinleri (155,000 shp)', speed:'32', range:'9500', mainGun:'8 × 380 mm L/45 (Dörtlü Taretlerde)', secondary:'9 × 152 mm', aaGuns:'56 × 40 mm Bofors, 48 × 20 mm', torpedoes:'Yok', armour:'330 mm kuşak', aviation:'2 × Mancınık (WWII)', crew:'1569', commission:'1940', fate:'1968 yılında hurdaya ayrıldı.', notes:'Tüm ana bataryasını baş bodoslamada (önde) toplayan eşsiz tasarım.' },
+    { id:25, name:'FS Charles de Gaulle (R91)', shipClass:'Charles de Gaulle', type:'Uçak Gemisi (CV / CVN)', nation:'Fransa', displacement:'42500', length:'261.5', beam:'64.3', draft:'9.4', power:'2 × K15 PWR Nükleer Reaktör', speed:'27', range:'Sınırsız', mainGun:'Yok', secondary:'32 hcr. Sylver VLS (Aster 15)', aaGuns:'2 × Sadral (Mistral füzeleri)', torpedoes:'Yok', armour:'Bilinmiyor', aviation:'40 Uçak (Dassault Rafale M, E-2C Hawkeye)', crew:'1950', commission:'2001', fate:'Aktif Hizmette', notes:'ABD dışındaki tek nükleer motorlu uçak gemisi.' },
+    { id:26, name:'FS Amiral Ronarc\'h (D660)', shipClass:'Belharra (FDI)', type:'Fırkateyn (FF / FFG)', nation:'Fransa', displacement:'4500', length:'122', beam:'17.7', draft:'5.4', power:'CODAD (32,000 kW)', speed:'27', range:'5000', mainGun:'1 × 76 mm OTO Melara', secondary:'16 × Sylver A50 VLS (Aster 15/30), 8 × Exocet MM40', aaGuns:'2 × 20 mm Narwhal', torpedoes:'2 × İkiz Torpido (MU90)', armour:'Sea Fire AESA Radar', aviation:'1 × NH90 Helikopter, İHA', crew:'125 + 28 Yolcu', commission:'Test Aşamasında', fate:'Test Aşamasında', notes:'Tamamen dijital sistemlere sahip yeni nesil savunma ve müdahale fırkateyni.' },
+
+    /* ---------------- RUSYA / SSCB ---------------- */
+    { id:27, name:'Pyotr Velikiy', shipClass:'Kirov', type:'Kruvazör (CG / CA / CL)', nation:'Rusya', displacement:'28000', length:'252', beam:'28.5', draft:'9.1', power:'2 × KN-3 Nükleer Reaktör (140,000 shp)', speed:'32', range:'Sınırsız', mainGun:'1 × İkiz 130 mm AK-130', secondary:'20 × P-700 Granit Gemisavar, 96 × S-300FM (VLS)', aaGuns:'6 × Kashtan CIWS', torpedoes:'10 × 533 mm tüp', armour:'Bilinmiyor', aviation:'3 × Kamov Ka-27 Helikopter', crew:'710', commission:'1998', fate:'Aktif Hizmette', notes:'Batılılar tarafından "Muharebe Kruvazörü" olarak adlandırılan nükleer güçle çalışan devasa gemi.' },
+    { id:28, name:'TK-208 Dmitriy Donskoy', shipClass:'Typhoon (Proje 941)', type:'Denizaltı (SS / SSN / SSBN)', nation:'Rusya', displacement:'48000 (Daldığında)', length:'175', beam:'23', draft:'12', power:'2 × OK-650 Nükleer Reaktör', speed:'27 (Daldığında)', range:'Sınırsız', mainGun:'Yok', secondary:'20 × RSM-52 Balistik Füze (Nükleer)', aaGuns:'İğla MANPADS', torpedoes:'6 × 533 mm torpido tüpü', armour:'Titanyum iç tekne', aviation:'Yok', crew:'160', commission:'1981', fate:'2023 yılında hizmet dışı bırakıldı.', notes:'Soğuk Savaşın sembollerinden biri, üretilmiş en büyük denizaltı sınıfı.' },
+    { id:29, name:'Moskva', shipClass:'Slava (Proje 1164)', type:'Kruvazör (CG / CA / CL)', nation:'Rusya', displacement:'12500', length:'186.4', beam:'20.8', draft:'8.4', power:'COGAG (130,000 shp)', speed:'32', range:'10000', mainGun:'1 × İkiz 130 mm AK-130', secondary:'16 × P-500 Bazalt Gemisavar, 64 × S-300F', aaGuns:'6 × AK-630 CIWS', torpedoes:'10 × 533 mm tüp', armour:'Bilinmiyor', aviation:'1 × Kamov Ka-27 Helikopter', crew:'480', commission:'1983', fate:'Nisan 2022\'de Ukrayna Neptün füzeleriyle batırıldı.', notes:'Rus Karadeniz Filosu\'nun eski amiral gemisi.' },
+
+    /* ---------------- İTALYA ---------------- */
+    { id:30, name:'Vittorio Veneto', shipClass:'Littorio', type:'Zırhlı (BB)', nation:'İtalya', displacement:'45236', length:'237.8', beam:'32.8', draft:'9.6', power:'Buhar türbinleri (128,200 shp)', speed:'30', range:'3920', mainGun:'9 × 381 mm L/50', secondary:'12 × 152 mm', aaGuns:'12 × 90 mm, 20 × 37 mm', torpedoes:'Yok', armour:'350 mm kuşak, Pugliese Torpido Savunma', aviation:'3 × IMAM Ro.43 Deniz Uçağı', crew:'1920', commission:'1940', fate:'1948\'de hurdaya ayrıldı.', notes:'İtalyan mühendisliğinin şaheseri olan II. Dünya Savaşı zırhlısı.' },
+    { id:31, name:'Andrea Doria (D553)', shipClass:'Horizon', type:'Muhrip (DD / DDG)', nation:'İtalya', displacement:'7050', length:'152.9', beam:'20.3', draft:'7.6', power:'CODOG (GE LM2500)', speed:'29', range:'7000', mainGun:'3 × 76 mm OTO Melara Super Rapid', secondary:'48 hcr. Sylver VLS (Aster), 8 × Teseo Mk2/A', aaGuns:'Toplara entegre Strales sistemi', torpedoes:'2 × İkiz Eurotorp', armour:'Bilinmiyor', aviation:'1 × AW101 Helikopter', crew:'230', commission:'2007', fate:'Aktif Hizmette', notes:'Fransa-İtalya ortak yapımı hava savunma muhribi.' }
+  ];
+}
+
+let ships=[], sel1=null, sel2=null, adminOpen=false;
+const PASS='türk-admiral';
+
+(async function init(){
+  ships = await loadShips();
+  populateNations();
+  renderAdminTable();
+})();
+
+function getUnique(arr, key){ return [...new Set(arr.map(item => item[key]).filter(Boolean))].sort(); }
+
+function populateNations(){
+  const nations = getUnique(ships, 'nation');
+  const n1 = document.getElementById('nation1');
+  const n2 = document.getElementById('nation2');
+  const opts = '<option value="">— Ülke Seçin —</option>' + nations.map(n => `<option value="${n}">${n}</option>`).join('');
+  n1.innerHTML = opts; n2.innerHTML = opts;
+}
+
+function onNationChange(boxNum){
+  const nationSel = document.getElementById('nation'+boxNum).value;
+  const typeSel = document.getElementById('type'+boxNum);
+  const shipSel = document.getElementById('ship'+boxNum);
+  shipSel.innerHTML = '<option value="">— Önce Tür Seçin —</option>'; shipSel.disabled = true;
+  updatePreview(boxNum, null);
+  if(!nationSel){
+    typeSel.innerHTML = '<option value="">— Önce Ülke Seçin —</option>'; typeSel.disabled = true;
+    if(boxNum===1) sel1=null; else sel2=null;
+    updateHint(); return;
+  }
+  const availableShips = ships.filter(s => s.nation === nationSel);
+  const types = getUnique(availableShips, 'type');
+  typeSel.innerHTML = '<option value="">— Gemi Türü Seçin —</option>' + types.map(t => `<option value="${t}">${t}</option>`).join('');
+  typeSel.disabled = false;
+  if(boxNum===1) sel1=null; else sel2=null; updateHint();
+}
+
+function onTypeChange(boxNum){
+  const nationSel = document.getElementById('nation'+boxNum).value;
+  const typeSel = document.getElementById('type'+boxNum).value;
+  const shipSel = document.getElementById('ship'+boxNum);
+  updatePreview(boxNum, null);
+  if(!typeSel){
+    shipSel.innerHTML = '<option value="">— Önce Tür Seçin —</option>'; shipSel.disabled = true;
+    if(boxNum===1) sel1=null; else sel2=null;
+    updateHint(); return;
+  }
+  const availableShips = ships.filter(s => s.nation === nationSel && s.type === typeSel);
+  shipSel.innerHTML = '<option value="">— Sınıf ve Gemi Seçin —</option>' + availableShips.map(s => `<option value="${s.id}">${s.shipClass ? s.shipClass+' Sınıfı - ' : ''}${s.name}</option>`).join('');
+  shipSel.disabled = false;
+  if(boxNum===1) sel1=null; else sel2=null; updateHint();
+}
+
+function onShipChange(boxNum){
+  const shipSel = document.getElementById('ship'+boxNum).value;
+  const shipId = shipSel ? parseInt(shipSel) : null;
+  if(boxNum===1) sel1 = shipId; else sel2 = shipId;
+  updatePreview(boxNum, shipId); updateHint();
+}
+
+function updatePreview(boxNum, shipId){
+  const p = document.getElementById('preview'+boxNum);
+  if(!shipId){ p.innerHTML='<span class="preview-empty">Listeden seçimlerinizi tamamlayın...</span>'; return; }
+  const s = ships.find(x => x.id === shipId);
+  if(!s) return;
+  p.innerHTML=`<div class="preview-icon">⚓</div><div><div class="preview-name">${s.name}</div><div class="preview-sub">${s.shipClass ? s.shipClass+' Sınıfı, ' : ''}${s.type||''} • ${s.nation||''}</div></div>`;
+}
+
+function updateHint(){
+  const btn=document.getElementById('compareBtn');
+  const hint=document.getElementById('hintTxt');
+  if(sel1 && sel2){ btn.disabled=false; hint.textContent='Analiz için hazır. Butona tıklayın.'; } 
+  else { btn.disabled=true; hint.textContent='Lütfen her iki modülden de gemi seçiminizi tamamlayın.'; }
+}
+
+const SECTIONS=[
+  { label:'SINIFLANDIRMA VE KİMLİK', fields:[{key:'name',label:'Gemi Adı'},{key:'shipClass',label:'Gemi Sınıfı'},{key:'type',label:'Savaş Sınıfı/Türü'},{key:'nation',label:'Donanma / Ülke'},{key:'commission',label:'Hizmete Giriş'}]},
+  { label:'BOYUTLAR VE PERFORMANS', fields:[{key:'displacement',label:'Tam Yüklü Deplasman', suffix:' ton'},{key:'length',label:'Tam Uzunluk', suffix:' m'},{key:'beam',label:'Genişlik (Beam)', suffix:' m'},{key:'draft',label:'Su Çekimi (Draft)', suffix:' m'},{key:'power',label:'İtici Güç Motoru'},{key:'speed',label:'Maksimum Hız', suffix:' knot'},{key:'range',label:'Operasyonel Menzil', suffix:' nmi'}]},
+  { label:'SİLAHLANMA', fields:[{key:'mainGun',label:'Ana Top Bataryası'},{key:'secondary',label:'İkincil Silahlar / Füzeler'},{key:'aaGuns',label:'Uçaksavar Donanımı (AA)'},{key:'torpedoes',label:'Torpido Sistemleri'}]},
+  { label:'KORUMA, DONANIM VE PERSONEL', fields:[{key:'armour',label:'Zırh ve Elektronik Harp'},{key:'aviation',label:'Havacılık Kapasitesi'},{key:'crew',label:'Mürettebat', suffix:' Personel'}]},
+  { label:'TARİHÇE', fields:[{key:'fate',label:'Geminin Akıbeti'},{key:'notes',label:'Ek Notlar'}]}
+];
+
+function renderComparison(){
+  if(!sel1||!sel2) return;
+  const s1=ships.find(x=>x.id===sel1), s2=ships.find(x=>x.id===sel2);
+  document.getElementById('hShip1').textContent=s1.name; document.getElementById('hShip2').textContent=s2.name;
+  let html='';
+  SECTIONS.forEach(sec=>{
+    html+=`<tr class="cat-row"><td colspan="3">${sec.label}</td></tr>`;
+    sec.fields.forEach(f=>{
+      const v1=(s1[f.key]||'').trim(); const v2=(s2[f.key]||'').trim();
+      const disp1 = v1 ? (v1.includes(f.suffix?.trim()) ? v1 : v1 + (f.suffix||'')) : '—';
+      const disp2 = v2 ? (v2.includes(f.suffix?.trim()) ? v2 : v2 + (f.suffix||'')) : '—';
+      const cls1 = v1?'':'empty', cls2 = v2?'':'empty';
+      html+=`<tr class="data-row"><td class="td-field">${f.label}</td><td class="td-val ${cls1}">${disp1}</td><td class="td-val ${cls2}">${disp2}</td></tr>`;
+    });
+  });
+  document.getElementById('compBody').innerHTML=html;
+  const secDiv=document.getElementById('comparisonSection');
+  secDiv.style.display='block'; secDiv.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function resetAll(){
+  ['nation1','type1','ship1','nation2','type2','ship2'].forEach(id => { const el = document.getElementById(id); el.value = ''; if(id.includes('type') || id.includes('ship')) el.disabled = true; });
+  sel1=null; sel2=null; updatePreview(1, null); updatePreview(2, null); updateHint();
+  document.getElementById('comparisonSection').style.display='none';
+}
+
+function toggleAdminGate(){ if(adminOpen){ adminLock(); return; } document.getElementById('adminGate').classList.toggle('open'); }
+function checkPass(){ if(document.getElementById('adminPass').value === PASS){ document.getElementById('adminGate').classList.remove('open'); document.getElementById('adminContent').classList.add('open'); adminOpen=true; toast('Yetkilendirme başarılı. Hoş geldiniz.'); } else { toast('Hatalı parola.'); document.getElementById('adminPass').value=''; } }
+function adminLock(){ adminOpen=false; document.getElementById('adminContent').classList.remove('open'); document.getElementById('adminGate').classList.remove('open'); document.getElementById('adminPass').value=''; toast('Oturum sonlandırıldı.'); }
+function renderAdminTable(){
+  const tbody=document.getElementById('adminBody'); const tbl=document.getElementById('adminTable'); const empty=document.getElementById('adminEmpty');
+  if(!ships.length){ tbl.style.display='none'; empty.style.display='block'; return; }
+  tbl.style.display=''; empty.style.display='none';
+  tbody.innerHTML=ships.map((s)=>`<tr><td style="font-weight:600; color:var(--primary);">${s.name}</td><td style="color:var(--text-muted);">${s.shipClass||'—'}</td><td style="color:var(--text-muted);">${s.type||'—'}</td><td style="color:var(--text-muted);">${s.nation||'—'}</td><td style="color:var(--text-muted);">${s.commission||'—'}</td><td style="text-align:center;"><button class="action-btn edit-btn" onclick="openEditModal(${s.id})" title="Düzenle">✎</button><button class="action-btn del-btn" onclick="deleteShip(${s.id})" title="Sil" style="margin-left:4px;">✕</button></td></tr>`).join('');
+}
+
+let editingId=null;
+const formFields = ['name','class','type','nation','displacement','length','beam','draft','power','speed','range','maingun','secondary','aaguns','torpedoes','armour','aviation','crew','commission','fate','notes'];
+function openAddModal(){ editingId=null; document.getElementById('modalTitle').textContent='Yeni Gemi Kaydı'; formFields.forEach(f=>{ const e=document.getElementById('f_'+f); if(e) e.value=''; }); document.getElementById('shipModal').classList.add('open'); }
+function openEditModal(id){
+  const s=ships.find(x=>x.id===id); if(!s) return;
+  editingId=id; document.getElementById('modalTitle').textContent='Düzenle: '+s.name;
+  const m={name:s.name,class:s.shipClass,type:s.type,nation:s.nation,displacement:s.displacement,length:s.length,beam:s.beam,draft:s.draft,power:s.power,speed:s.speed,range:s.range,maingun:s.mainGun,secondary:s.secondary,aaguns:s.aaGuns,torpedoes:s.torpedoes,armour:s.armour,aviation:s.aviation,crew:s.crew,commission:s.commission,fate:s.fate,notes:s.notes};
+  Object.entries(m).forEach(([k,v])=>{ const e=document.getElementById('f_'+k); if(e) e.value=v||''; });
+  document.getElementById('shipModal').classList.add('open');
+}
+function closeModal(){ document.getElementById('shipModal').classList.remove('open'); }
+
+async function saveShip(){
+  const d={ name:document.getElementById('f_name').value.trim(), shipClass:document.getElementById('f_class').value.trim(), type:document.getElementById('f_type').value, nation:document.getElementById('f_nation').value.trim(), displacement:document.getElementById('f_displacement').value.trim(), length:document.getElementById('f_length').value.trim(), beam:document.getElementById('f_beam').value.trim(), draft:document.getElementById('f_draft').value.trim(), power:document.getElementById('f_power').value.trim(), speed:document.getElementById('f_speed').value.trim(), range:document.getElementById('f_range').value.trim(), mainGun:document.getElementById('f_maingun').value.trim(), secondary:document.getElementById('f_secondary').value.trim(), aaGuns:document.getElementById('f_aaguns').value.trim(), torpedoes:document.getElementById('f_torpedoes').value.trim(), armour:document.getElementById('f_armour').value.trim(), aviation:document.getElementById('f_aviation').value.trim(), crew:document.getElementById('f_crew').value.trim(), commission:document.getElementById('f_commission').value.trim(), fate:document.getElementById('f_fate').value.trim(), notes:document.getElementById('f_notes').value.trim() };
+  if(!d.name || !d.nation || !d.type){toast('Gemi adı, türü ve ülkesi zorunludur!');return;}
+  if(editingId!==null){ const i=ships.findIndex(x=>x.id===editingId); if(i!==-1) ships[i]={...ships[i],...d}; toast('Kayıt başarıyla güncellendi.'); } else { let nextId = ships.length ? Math.max(...ships.map(s=>s.id))+1 : 1; ships.push({id:nextId,...d}); toast('Yeni gemi sisteme eklendi.'); }
+  await saveShips(ships); populateNations(); resetAll(); renderAdminTable(); closeModal();
+}
+
+async function deleteShip(id){ if(!confirm('Bu gemi kaydını tamamen silmek istediğinize emin misiniz?')) return; ships=ships.filter(x=>x.id!==id); await saveShips(ships); populateNations(); resetAll(); renderAdminTable(); toast('Kayıt silindi.'); }
+
+function exportCSV(){
+  if(!ships.length){toast('Dışa aktarılacak veri yok.');return;}
+  const keys=['name','shipClass','type','nation','displacement','length','beam','draft','power','speed','range','mainGun','secondary','aaGuns','torpedoes','armour','aviation','crew','commission','fate','notes'];
+  let csv=keys.join(',')+'\n'; ships.forEach(s=>{ csv+=keys.map(k=>'"'+(s[k]||'').replace(/"/g,'""')+'"').join(',')+'\n'; });
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download='donanma_veritabani.csv'; a.click();
+}
+
+function toast(msg){ const n=document.getElementById('toast'); n.textContent=msg; n.classList.add('show'); setTimeout(()=>n.classList.remove('show'),3000); }
+document.addEventListener('click',function(e){ const m=document.getElementById('shipModal'); if(e.target===m) closeModal(); });
+</script>
+</body>
+</html>
